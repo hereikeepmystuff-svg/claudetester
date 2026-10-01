@@ -1,0 +1,6 @@
+# Extra packages install.sh always installs, even if no tracked config needs them.
+# One or more per line; prefix with aur: to force the AUR.
+
+base-devel
+git
+rsync
