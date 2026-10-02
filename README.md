@@ -52,7 +52,7 @@ Each line in `dotfiles.conf` is a path followed by the packages that path needs:
 
 ```
 .config/nvim        neovim ripgrep fd
-.config/hypr        hyprland hyprpaper aur:hyprshot
+.config/sway        sway swaybg swayidle aur:swaysome
 /etc/pacman.conf    pacman-contrib
 ```
 
