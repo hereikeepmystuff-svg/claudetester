@@ -1,0 +1,347 @@
+* {
+    /* `otf-font-awesome` is required to be installed for icons */
+    font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    margin-top: 1;
+    margin-bottom: 1;
+}
+
+window#waybar {
+    color: #ffffff;
+    transition-property: background-color;
+    background-color: rgba(90,90,90,0);
+    transition-duration: .5s;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+window#waybar.empty {
+    background-color: transparent;
+}
+
+
+window#waybar.solo {
+    background-color: rgba(90,90,90,0);
+}
+
+button {
+    /* Use box-shadow instead of border so the text isn't offset */
+    box-shadow: inset 0 -3px transparent;
+    /* Avoid rounded borders under each button name */
+    border: none;
+    border-radius: 0;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+button:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+/* you can set a style on hover for any module like this */
+#pulseaudio:hover {
+    background-color: #a37800;
+}
+
+#workspaces button {
+    border-radius: 5%;
+    padding: 0 5px;
+    border: 3px solid #4c566a;
+    background-color: #282d39;
+    color: #ffffff;
+}
+
+#workspaces button:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#workspaces button.focused {
+    background-color: #86bcc3;
+}
+
+#workspaces button.urgent {
+    background-color: #eb4d4b;
+}
+
+#mode {
+    background-color: #64727D;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#power-profiles-daemon,
+#window,
+#workspaces {
+    margin: 0 1px;
+    padding: 0 15px;
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+}
+
+#clock {
+    border-radius: 5%;
+    	background-color: #282d39;
+    	border: 3px solid #4c566a;
+}
+
+#battery {
+    background-color: #282d39;
+    border-radius: 5%;
+    color: #ffffff;
+    border: 3px solid #4c566a;
+}
+
+#battery.charging, #battery.plugged {
+    color: #ffffff;
+    border-radius: 5%;
+    background-color: #26A65B;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+/* Using steps() instead of linear as a timing function to limit cpu usage */
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#power-profiles-daemon {
+    padding-right: 15px;
+    border-radius: 5%;
+}
+
+#power-profiles-daemon.performance {
+    background-color: #282d39;
+    border-radius: 5%;
+    border: 3px solid #4c566a;
+    color: #ffffff;
+}
+
+#power-profiles-daemon.balanced {
+    background-color:  	#282d39;
+    border-radius: 5%;
+    color: #ffffff;
+    border: 3px solid #4c566a;
+}
+
+#power-profiles-daemon.power-saver {
+    background-color:  	#3b4252;
+    border-radius: 5%;
+    color: #000000;
+    border: 3px solid #4c566a;
+}
+
+label:focus {
+    background-color: #000000;
+}
+
+#cpu {
+    background-color: #282d39;
+    border-radius: 5%;
+    color: #ffffff;
+    border: 3px solid #4c566a;
+}
+
+#memory {
+    background-color: #282d39;
+    border-radius: 5%;
+    border: 3px solid #4c566a;
+}
+
+#disk {
+    background-color: #964B00;
+    border-radius: 5%;
+}
+
+#backlight {
+    background-color: #282d39;
+    border-radius: 5%;
+    color: #ffffff;
+    border: 3px solid #4c566a;
+
+}
+
+#network {
+    background-color: #2980b9;
+    border-radius: 5%;
+}
+
+#network.disconnected {
+    background-color: #f53c3c;
+    border-radius: 5%;
+}
+
+#pulseaudio {
+    background-color: #282d39;
+    border-radius: 5%;
+    color: #ffffff;
+    border: 3px solid #4c566a;
+}
+
+#pulseaudio.muted {
+    background-color: #90b1b1;
+    border-radius: 5%;
+    color: #2a5c45;
+}
+
+#tray {
+    background-color: #282d39;
+    border-radius: 5%;
+    border: 3px solid #4c566a;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #eb4d4b;
+}
+
+#idle_inhibitor {
+   border: 3px solid #4c566a;
+   border-radius: 5%;
+   background-color: #282d39;
+}
+
+#idle_inhibitor.activated {
+    background-color:  	#4c566a;
+   border-radius: 5%;
+    color: #ffffff;
+    border: 3px solid #4c566a;
+
+}
+
+#keyboard-state {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5%;
+    color: #000000;
+    padding: 0 5px;
+    margin: 0 5px;
+    min-width: 16px;
+}
+
+#keyboard-state > label {
+    padding: 0 5px;
+   border-radius: 5%;
+}
+
+#keyboard-state > label.locked {
+    background: #97e1ad;
+   border-radius: 5%;
+}
+
+#scratchpad {
+    background: transparent;
+   border-radius: 5%;
+    border: 3px solid #4c566a;
+
+}
+
+#scratchpad.empty {
+	background-color: transparent;
+   border-radius: 5%;
+}
+
+#custom-menu {
+    padding: 0 6px;
+    border-radius: 5%;
+    background-color:  	#282d39;
+    margin: 0 4px;
+    border: 3px solid #4c566a;
+}
+#custom-powermenu {
+    padding: 0 6px;
+   border-radius: 5%;
+    margin: 0 4px;
+    background-color:  	#282d39;
+    border: 3px solid #4c566a;
+}
+#custom-notification {
+    background-color: #282d39;
+   border-radius: 5%;
+    border: 3px solid #4c566a;
+    padding: 0 6px;
+    margin: 0 4px;
+
+}
+
+#mpris{
+   border-radius: 5%;
+    background-color:  	#282d39;
+    border: 3px solid #4c566a;
+    padding: 0 6px;
+    margin: 0 4px;
+}
+
+#custom-app1 {
+    border: 3px solid #4c566a;
+   border-radius: 5%;
+    padding: 0 6px;
+    background-color:  	#282d39;
+}
+#custom-app2 {
+    border: 3px solid #4c566a;
+   border-radius: 5%;
+    padding: 0 6px;
+    background-color:  	#282d39;
+}
+#custom-app3 {
+    border: 3px solid #4c566a;
+   border-radius: 5%;
+    padding: 0 6px;
+    background-color:  	#282d39;
+}
+#custom-app4 {
+    border: 3px solid #4c566a;
+   border-radius: 5%;
+    padding: 0 6px;
+    background-color:  	#282d39;
+}
+#custom-app5 {
+    border: 3px solid #4c566a;
+   border-radius: 5%;
+    padding: 0 6px;
+    background-color:  	#282d39;
+}
+#custom-app6 {
+    border: 3px solid #4c566a;
+   border-radius: 5%;
+    padding: 0 6px;
+    background-color:  	#282d39;
+}

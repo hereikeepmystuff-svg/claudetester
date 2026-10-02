@@ -1,0 +1,38 @@
+{
+	"height": 10,
+	"position": "bottom",
+	"mode": "dock",
+	"modules-center": [
+		"custom/app1",
+		"custom/app2",
+		"custom/app3",
+		"custom/app4",
+		"custom/app5"
+	],
+
+"custom/app1": {
+		"format": "  {}",
+		"tooltip": "zen browser",
+		"on-click": "zen-browser"
+	},
+
+"custom/app2": {
+		"format": "  {}",
+		"on-click": "thunar"
+	},
+"custom/app3": {
+		"format": "  {}",
+		"on-click": "alacritty"
+	},
+"custom/app4": {
+		"format": "  {}",
+		"on-click": "~/Applications/Cider*"
+	},
+
+"custom/app5": {
+		"format": "  {}",
+		"on-click": ""
+	}
+
+
+}

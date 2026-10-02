@@ -1,0 +1,299 @@
+// -*- mode: jsonc -*-
+{
+    "layer": "bottom",
+    "margin-top": 2,
+    "margin-left": 2,
+    "margin-right": 2,
+    "margin-bottom": 2,
+    "output": "",
+    "height": 34, 
+    "spacing": 0,
+    "position": "top",
+
+    "modules-left": [
+        "custom/menu",
+	"hyprland/workspaces",
+	"sway/workspaces",
+	"niri/workspaces",
+	"custom/app1",
+	"custom/app2",
+	"custom/app3",
+        "sway/mode",
+        "sway/scratchpad"
+    ],
+   "modules-center": [
+	"sway/window"
+            ],
+    "modules-right": [
+	
+//        "privacy",
+//        "idle_inhibitor",
+//	"cava",
+	"keyboard-state",
+        "power-profiles-daemon",
+//       "cpu",
+        "memory",
+	"pulseaudio",
+        "backlight",
+//	"custom/bluetooth",
+	"battery",
+	"tray",
+        "custom/notification",
+        "clock",
+	"custom/virt-key",
+    	"custom/powermenu"
+    ],
+    
+    "keyboard-state": {
+        "numlock": true,
+        "capslock": true,
+        "format": "{name}",
+        "format-icons": {
+            "locked": "ON",
+            "unlocked": ""
+        }
+    },
+
+
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+
+    "sway/scratchpad": {
+        "format": "{icon} {count}",
+        "show-empty": false,
+        "format-icons": ["", ""],
+        "tooltip": true,
+        "tooltip-format": "{app}: {title}"
+    },
+        "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
+    
+    "window": {
+	"max-length": 50
+    },
+
+    "tray": {
+        "icon-size": 21,
+        "spacing": 10
+    },
+
+    "clock": {
+	"tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d}"
+    },
+    
+    "cpu": {
+        "format": "{usage}% ",
+        "tooltip": false
+    },
+
+    "memory": {
+        "format": "{}% "
+    },
+
+    "backlight": {
+        "format": "{percent}% {icon}",
+        "format-icons": ["", "", "", "", "", "", "", "", ""]
+    },
+
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 15 }, "format": "{capacity}% {icon}",
+        "format-full": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        "format-good": "", // An empty format will hide the module
+        "format-full": "",
+        "format-icons": ["", "", "", "", ""]
+    },
+ 
+    "power-profiles-daemon": {
+      "format": "{icon}",
+      "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+      "tooltip": true,
+      "format-icons": {
+        "default": "",
+        "performance": "",
+        "balanced": "",
+        "power-saver": ""
+      }
+    },
+
+    "network": {
+        "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-ethernet": "{ipaddr}/{cidr} ",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "format-linked": "{ifname} (No IP) ",
+        "format-disconnected": "Disconnected ⚠",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": " {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+    
+   
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "<span foreground='red'><sup></sup></span>",
+      "none": "",
+      "dnd-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-none": "",
+      "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "inhibited-none": "",
+      "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-inhibited-none": ""
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+   "mpris": {
+	"format": "{player_icon} {dynamic}",
+	"format-paused": "{status_icon} <i>{dynamic}</i>",
+	"player-icons": {
+		"default": "▶",
+		"mpv": "🎵",
+		"firefox": ""
+	},
+	"status-icons": {
+		"paused": "⏸"
+	},
+	"max-length": 25,
+	"on-click-middle": "playerctl play-pause",
+	"on-click": "playerctl next",
+	"on-click-right": "playerctl previous"
+  },
+   
+    "custom/powermenu": {
+        "format": " ⏻ {}",
+        "return-type": "json",
+        "max-length": 40,
+     	"on-click": "~/.config/rofi/powermenu/powermenu.sh",	
+     	"on-click-right": "pkill rofi",
+	"on-scroll-up": "ddcutil setvcp 10 + 5",
+	"on-scroll-down": "ddcutil setvcp 10 - 5"
+    },
+
+ "privacy": {
+                "icon-spacing": 4,
+                "icon-size": 18,
+                "transition-duration": 250,
+                "modules": [
+                     {
+                          "type": "screenshare",
+                          "tooltip": true,
+                          "tooltip-icon-size": 24
+                     },
+                    {
+                          "type": "audio-in",
+                          "tooltip": true,
+                          "tooltip-icon-size": 24
+                     }
+                ]
+           },   
+    "custom/menu": {
+        "format": "{}",
+        "return-type": "json",
+//        "max-length": 40,
+//	"tooltip": false,
+//                     "menu": "on-click",
+//                     "menu-file": "/home/pc/.config/waybar/favorites.xml",
+//                     "menu-actions": {
+//                          "zen-browser": "zen-browser",
+//                          "dolphin": "dolphin",
+//                          "alacritty": "alacritty",
+//                          "music": "~/Applications/Cider-1.6.3_f94add7ebacee363862f122143da69ec.AppImage"
+//                     },
+     	"on-click": "~/.config/rofi/AppMenu/launcher.sh",
+	"on-click-right": "pkill rofi"	
+
+    },
+
+"custom/app1": {
+		"format": "   {}",
+		"tooltip": "zen browser",
+		"on-click": "zen-browser"
+	},
+
+"custom/app2": {
+		"format": "   {}",
+		"on-click": "thunar"
+	},
+"custom/app3": {
+		"format": "   {}",
+		"on-click": "alacritty"
+	},
+"custom/app4": {
+		"format": "{}",
+		"on-click": "~/Applications/Cider-1.6.3_f94add7ebacee363862f122143da69ec.AppImage"
+	},
+
+"custom/bluetooth": {
+		"format": "{}",
+		"on-click": "alacritty -e bluetui",
+		"on-click-right": "pkill bluetui"
+	},
+
+"custom/virt-key": {
+		"format": "{}",
+		"on-click": "wvkbd-mobintl",
+		"on-click-right": "pkill wvkbd-mobintl"
+	},
+
+
+ "sway/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "urgent": ""
+        },
+	"persistent-workspaces": {
+		"1": [], 
+		"2": [], 
+		"3": [], 
+		"4": [], 
+		"5": [] 
+	}
+}
+    
+
+
+
+    
+        }
+
+
