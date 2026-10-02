@@ -1,0 +1,379 @@
+# Read `man 5 sway` for a complete reference.
+
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+set $mod1 Mod1
+
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+
+# Your preferred terminal emulator
+set $term kitty
+
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+## Use "Waypaper" Instead ##
+#output * bg /home/saurabh/Wallpapers/ign_waifu* fill
+
+
+# Screen Resolution & Scales
+ output HDMI-A-1 resolution 1920x1080@100Hz scale 1.0 adaptive_sync on
+ output eDP-1 resolution 1366x768@60Hz 
+#
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+### Input configuration
+#
+   input * {
+       dwt enabled
+       tap enabled
+       natural_scroll disabled
+       middle_emulation enabled
+   }
+#
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+
+### Key bindings
+#
+# Launch Apps & Other Things:
+#
+    # Start a terminal
+    bindsym $mod+Return exec $term 
+
+    # Kill focused window
+    bindsym $mod+q kill
+
+    # Launch Config Editor
+    bindsym $mod+d exec "kitty -e vim ~/.config/sway/config"
+
+    # Start Browser
+    bindsym $mod+w exec zen-browser
+   
+    # Start File Manager
+    bindsym $mod+e exec thunar
+
+    # Start Terminal Based File Manager
+    bindsym $mod+shift+e exec "kitty -e ranger"
+    
+    # Start Apps Menu
+    bindsym Mod1+space exec ~/.config/rofi/AppMenu/launcher.sh
+    
+    # Take Screenshot of entire screen
+    bindsym Print exec grimshot save output && notify-send "Saved to ~/Pictures"
+
+    # Take Screenshot of selected region
+    bindsym Shift+Print exec grimshot save area && notify-send "Saved to ~/Pictures"
+    
+    # Power Menu
+    bindsym $mod+shift+q exec ~/.config/rofi/powermenu/powermenu.sh 
+
+   # Launch System Monitor - btop
+   bindsym ctrl+Shift+escape exec "kitty -e btop" 
+
+########### Do not Change ###############
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+########### Do not Change ###############
+
+    # Exit sway (logs you out of your Wayland session)
+#    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+ 
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+
+# Workspaces:
+#
+ # Apps in workspace
+ #   assign [app_id="app-name"] workspace number 1
+  
+# Workspace Management
+# Switch to workspace
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+   # bindsym $mod+s layout stacking
+    bindsym $mod+t layout tabbed
+    bindsym $mod+s layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+minus scratchpad show
+#
+
+
+# Resizing containers:
+
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+#
+
+
+# Display Config
+set $laptop eDP-1
+bindswitch --reload --locked lid:on output $laptop disable
+bindswitch --reload --locked lid:off output $laptop enable
+
+#Gaps
+smart_gaps on
+gaps inner 0
+gaps outer 0
+
+# Remove/Add Titlebar
+default_border pixel 2
+titlebar_border_thickness 0
+titlebar_padding 0
+hide_edge_borders smart
+
+# Volume Control - If no multimedia keys on connected keyboard using pulseaudio 
+bindsym $mod+F2 exec pactl set-sink-volume @DEFAULT_SINK@ +5% && notify-send "Volume Increased"
+bindsym $mod+F1 exec pactl set-sink-volume @DEFAULT_SINK@ -5% && notify-send "Volume Decreased"
+
+#BENQ Monitor Brightness Control
+#bindsym $mod+F6 exec ddccontrol -r 0x10 -W +5 dev:/dev/i2c-1 && notify-send --hint int:transient:1 "Brightness" "$(sudo ddcutil getvcp 0x10 | awk '{print $9 }')" 
+#bindsym $mod+F5 exec ddccontrol -r 0x10 -W -5 dev:/dev/i2c-1 && notify-send --hint int:transient:1 "Brightness" "$(sudo ddcutil getvcp 0x10 | awk '{print $9 }')" 
+
+bindsym $mod+F6 exec ddcutil setvcp 10 + 5 && notify-send --hint int:transient:1 "Brightness" "$(sudo ddcutil getvcp 0x10 | awk '{print $9 }')" 
+#
+bindsym $mod+F5 exec ddcutil setvcp 10 - 5 && notify-send --hint int:transient:1 "Brightness" "$(sudo ddcutil getvcp 0x10 | awk '{print $9 }')" 
+#
+
+
+## Startup Apps - Put them here ##
+
+# Clipboard Manager
+exec --no-startup-id copyq
+
+# Bluetooth Management Tray Applet
+exec blueman-applet
+
+# Notification Daemon
+exec --no-startup-id swaync
+
+# Authentication Agent - If gnome polkit installed
+exec /polkit-gnome/polkit-gnome-authentication-agent-1
+
+# Authentication Agent - If KDE polkit installed
+#exec --no-startup-id /usr/lib/polkit-kde-authentication-agent-1
+
+# Launch Network Manager Tray Applet
+exec --no-startup-id nm-applet
+
+# Launch KDE Connect - Phone Connection
+exec --no-startup-id kdeconnectd && kdeconnect-indicator
+
+# Launch Syncthing Server
+exec --no-startup-id syncthing serve --no-browser
+
+# Restore last set wallpaper
+exec --no-startup-id waypaper --restore
+
+#Start virtual gpu for passthrough
+exec --no-startup-id "sudo echo "abc6ad32-0c87-40b1-b4c9-e308ad1524f1" > "/sys/devices/pci0000:00/0000:00:02.0/mdev_supported_types/i915-GVTg_V5_4/create""
+
+# floating for dialogs
+for_window [window_type="dialog"] floating enable
+for_window [window_role="dialog"] floating enable
+for_window [app_id="onboard"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [app_id="engrampa"] floating enable
+for_window [app_id="waypaper"] floating enable
+for_window [app_id="catfish"] floating enable
+for_window [class="zoom"] floating enable
+for_window [class="floating-terminal"] floating enable
+for_window [app_id="org.qbittorrent.qBittorrent"] floating enable
+for_window [class="Open Files"] floating enable
+
+# Make Sway Classic Window Manager
+ #for_window [class=".*"] floating enable
+ #for_window [app_id=".*"] floating enable
+ #for_window [window_role=".*"] floating enable
+
+#Sway Colors
+# class                 border  backgr. text    indicator child_border
+client.focused          #4c7899 #285577 #ffffff #2e9ef4   #9EB1CF
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+client.background       #ffffff
+
+# Workspace layout & Alignment
+workspace_layout default
+default_orientation horizontal
+
+# Multimedia bindings
+bindsym $mod+p exec playerctl play-pause
+bindsym $mod+shift+n exec playerctl previous
+bindsym $mod+n exec playerctl next
+
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+
+# Launch Exit Menu
+bindsym XF86PowerOff exec "~/.config/rofi/powermenu/powermenu.sh "
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec brightnessctl set 5%+ # increase screen brightness
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%- # decrease screen brightness
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPause exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+# Wallpaper change using waypaper & aww
+bindsym Ctrl+Mod1+w exec waypaper --random
+
+# Display Scaling
+output eDP-1 {
+	    scale 1
+}
+
+
+# Open Whatsapp
+bindsym $mod+shift+w  exec "/usr/bin/chromium --profile-directory=Default --app-id=hnpfjngllnobngcgfapefoaidbinmjnm" 
+
+# Open Notification Panel
+bindsym $mod+z exec "swaync-client -op"
+bindsym $mod+Shift+z exec "swaync-client -C"
+
+# waybar as swaybar
+bar {
+   swaybar_command waybar
+    hidden_state hide
+    mode hide
+}
+
+# Play lofi music
+bindsym  $mod+Ctrl+l exec "mpv https://www.youtube.com/live/jfKfPfyJRdk?si=c84wXYEk0_pi3-zT"
+
+# Launch Files Search
+bindsym  $mod+Ctrl+f exec catfish
+
+# Launch Emoji Picker
+bindsym  $mod+alt+e exec "rofi -show emoji"
+
+# Set display scale 
+bindsym $mod1+s exec "wlr-randr --output HDMI-A-1 --scale 1.4"
+bindsym $mod1+Shift+s exec "wlr-randr --output HDMI-A-1 --scale 1.0"
+
+# earlyoom notifier (Aggressive memory management)
+exec --no-startup-id systembus-notify
+
+
+# All windows opaque
+
+#set $opacity 0.85
+#for_window [class=".*"] opacity $opacity
+#for_window [app_id=".*"] opacity $opacity
+#for_window [app_id="zen"] opacity 1
+
+#blur enable
+
+
+#layer_effects "waybar" {
+#   blur enable;
+#}
+
+
+#corner_radius 7
