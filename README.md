@@ -6,6 +6,7 @@ Back up and restore Arch Linux config files with git, and install every applicat
 | --- | --- |
 | `dotfiles.sh` | Back up, restore, diff and track configs. Manages the automatic backup timer. |
 | `install.sh` | Installs the packages the configs depend on (pacman + AUR), then enables services. |
+| `setup.sh` | The one-command installer: installs git/rsync, clones the repo, runs `bootstrap.sh`. |
 | `bootstrap.sh` | Sets up a fresh machine in one go: `install.sh`, then `restore`, then optionally the timer. |
 | `dotfiles.conf` | The list of tracked paths, each followed by the packages it needs. |
 | `exclude.conf` | rsync patterns that are never backed up (caches, logs, `.git/`, SSH/GPG keys). |
@@ -15,6 +16,24 @@ Back up and restore Arch Linux config files with git, and install every applicat
 | `home/`, `root/` | The backed-up copies of files under `$HOME` and of system files such as `/etc/...`. |
 
 Requirements: `bash`, `git`, `rsync`. `install.sh` also needs `sudo`.
+
+## Quick start (one command)
+
+On a fresh Arch install, log in as your normal user (one with `sudo` rights) and run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hereikeepmystuff-svg/claudetester/main/setup.sh | bash
+```
+
+This installs `git` and `rsync`, clones this repo to `~/dotfiles`, installs every package the configs need, restores the configs, and asks whether to turn on daily automatic backups. Running it again updates the checkout and repeats the setup.
+
+To pass options to `install.sh`, put them after `bash -s --`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hereikeepmystuff-svg/claudetester/main/setup.sh | bash -s -- --snapshot --noconfirm
+```
+
+To clone somewhere else or from a fork, set `DOTFILES_DIR`, `DOTFILES_REPO` or `DOTFILES_BRANCH`, e.g. `curl -fsSL .../setup.sh | DOTFILES_DIR=~/.dotfiles bash`.
 
 ## Setup on your current machine
 
@@ -77,7 +96,7 @@ Every command takes `-n/--dry-run`.
 
 ## Restoring on a new machine
 
-On a fresh Arch install, log in as your normal user (one with `sudo` rights) and run:
+The [quick start](#quick-start-one-command) command does all of this. To do it by hand instead:
 
 ```bash
 sudo pacman -S --needed git rsync
