@@ -1,7 +1,7 @@
 # sweetin-halium
 
 Work-in-progress Halium 11 / Ubuntu Touch port for the Redmi Note 10 Pro
-(`sweetin`, SM7150 "atoll", Linux 4.14). Status: kernel build in progress; nothing has been booted on hardware.
+(`sweetin`, SM7150 "atoll", Linux 4.14). Status: kernel and DTBs build; boot image and system image not done; nothing booted on hardware.
 
 ## Layout
 - `config/halium.config`: container/Halium kernel options merged over the device defconfig.
@@ -22,7 +22,7 @@ Needs: gcc-aarch64-linux-gnu, binutils-aarch64-linux-gnu, flex, bison, bc, cpio,
 ## Notes
 - Base config is `sdmsteppe-perf` (SM6150), matching LineageOS `sweet` BoardConfig. An earlier `atoll-perf` build linked but had no DTBs and used the wrong platform, so it was discarded.
 - Boot params from the LineageOS board config: base 0x0, page size 4096, DTB in boot image, separate DTBO, cmdline `console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x880000`.
-- Build with the `sdmsteppe` config is in progress; not yet verified.
+- Verified: `sdmsteppe-perf` + patches 0001/0002 builds `Image`, `Image.gz`, `xiaomi-sdmmagpie.dtb` and `sweet-sdmmagpie-overlay.dtbo` (GCC 13, Linux 4.14.355). Not yet booted on hardware.
 
 ## Known gaps
 - Halium 11 is GSI-style (generic `halium_arm64` system image); a prebuilt system image still has to be sourced.
