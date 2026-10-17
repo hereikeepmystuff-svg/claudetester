@@ -36,8 +36,13 @@ for p in "$HERE"/patches/*.patch; do
 done
 cp "$HERE"/config/*.config "$KERNEL_DIR/arch/arm64/configs/vendor/"
 
-# libufdt's mkdtboimg.py is Python 2 only (xrange); make it run under python3 (idempotent)
-sed -i 's/\bxrange\b/range/g' "$BUILD_DIR/downloads/libufdt/utils/src/mkdtboimg.py"
+# libufdt's pie-gsi mkdtboimg.py is Python 2 only; use the Python 3 version from AOSP android13-gsi (same CLI)
+MKDTBO="$BUILD_DIR/downloads/libufdt/utils/src/mkdtboimg.py"
+if ! grep -q 'python3' "$MKDTBO"; then
+    curl -sfL "https://android.googlesource.com/platform/system/libufdt/+/refs/heads/android13-gsi/utils/src/mkdtboimg.py?format=TEXT" | base64 -d > "$MKDTBO.new"
+    grep -q 'python3' "$MKDTBO.new" || { echo "failed to fetch python3 mkdtboimg.py" >&2; exit 1; }
+    mv "$MKDTBO.new" "$MKDTBO"
+fi
 
 # 3. generic build (kernel, dtbo, boot.img, device tarball)
 exec "$TOOLS/build.sh" -b "$BUILD_DIR" -o "$HERE/out" "$@"
