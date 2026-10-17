@@ -36,5 +36,8 @@ for p in "$HERE"/patches/*.patch; do
 done
 cp "$HERE"/config/*.config "$KERNEL_DIR/arch/arm64/configs/vendor/"
 
+# libufdt's mkdtboimg.py is Python 2 only (xrange); make it run under python3 (idempotent)
+sed -i 's/\bxrange\b/range/g' "$BUILD_DIR/downloads/libufdt/utils/src/mkdtboimg.py"
+
 # 3. generic build (kernel, dtbo, boot.img, device tarball)
 exec "$TOOLS/build.sh" -b "$BUILD_DIR" -o "$HERE/out" "$@"
