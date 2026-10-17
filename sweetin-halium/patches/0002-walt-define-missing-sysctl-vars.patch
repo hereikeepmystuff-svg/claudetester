@@ -1,0 +1,15 @@
+diff --git a/kernel/sched/walt.c b/kernel/sched/walt.c
+index e5205551a..c61102685 100644
+--- a/kernel/sched/walt.c
++++ b/kernel/sched/walt.c
+@@ -2512,6 +2512,10 @@ DEFINE_RWLOCK(related_thread_group_lock);
+ unsigned int __read_mostly sched_group_upmigrate = 20000000;
+ unsigned int __read_mostly sysctl_sched_group_upmigrate_pct = 100;
+ 
++/* Referenced by kernel/sysctl.c; definitions are missing from this tree. */
++unsigned int __read_mostly sysctl_sched_conservative_pl;
++unsigned int __read_mostly sysctl_sched_many_wakeup_threshold = 1000;
++
+ /*
+  * Task groups, once up-migrated, will need to drop their aggregate
+  * demand to less than sched_group_downmigrate before they are "down"
