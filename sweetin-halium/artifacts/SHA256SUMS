@@ -1,0 +1,5 @@
+ad2b6a4c0cfb02113a9f823760b1b89762282d2bc73d6222c02a20656a994b06  boot-sweetin.img.xz
+e2bf4c917e23e7d1a2d768c34fa6ac15d804580b0d896bc2fcaebd9805196a83  dtbo-sweetin.img
+# uncompressed: 32168a5ced146e4bec2f34ed0ac8ef68483725bb5fc74fba3e9512fa09770148  boot.img
+# uncompressed: 37476cfd44768af7d2cf056543d39f3dd520495e4648f625771f45866600077b  rootfs.img
+# uncompressed: 3b84fc335f492fc76c9ebeb6393fcc6cc422e5bce6fc01dc30c9148b664de50a  system.img

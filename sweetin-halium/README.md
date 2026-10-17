@@ -1,7 +1,7 @@
 # sweetin-halium
 
 Ubuntu Touch (Halium 11) port for the Xiaomi Redmi Note 10 Pro (`sweetin` India / `sweet` global), SM7150, Linux 4.14.
-**Status: work in progress. Nothing here has been booted on hardware.**
+**Status: images build end to end; NOTHING has been booted on hardware.**
 
 ## How it is built
 Uses UBports' [halium-generic-adaptation-build-tools](https://gitlab.com/ubports/porting/community-ports/halium-generic-adaptation-build-tools).
@@ -10,8 +10,11 @@ Uses UBports' [halium-generic-adaptation-build-tools](https://gitlab.com/ubports
 2. applies `patches/*.patch` and copies `config/*.config` into the kernel's `arch/arm64/configs/vendor/`,
 3. runs the generic build with `deviceinfo` (kernel, DTB, DTBO, `boot.img`, device tarball in `out/`).
 
+Then `./make-images.sh` fetches UBports' rootfs + the generic Halium system image and produces `images/{boot,dtbo,rootfs,system}.img`.
+
     ./build.sh          # full build
     ./build.sh -k       # kernel + boot.img only
+    ./make-images.sh    # flashable images (needs fakeroot jq wget e2fsprogs android-sdk-libsparse-utils)
 
 Host needs (Ubuntu): bc bison build-essential cpio curl fakeroot flex git kmod libelf-dev libssl-dev lz4 python3 unzip wget xz-utils img2simg jq. `python2` is shimmed to `python3` when missing.
 
@@ -22,18 +25,33 @@ Host needs (Ubuntu): bc bison build-essential cpio curl fakeroot flex git kmod l
 - `patches/0001`: make clang-only `-mno-implicit-float` conditional (GCC compatibility).
 - `patches/0002`: define two WALT sysctl variables that `lineage-21` references but never defines (link error otherwise).
 
-## Verified so far
-- With the base config `vendor/sdmsteppe-perf_defconfig` (+ `debugfs`, `sweet`, `halium`), GCC 13 built `Image.gz`, `xiaomi-sdmmagpie.dtb` and `sweet-sdmmagpie-overlay.dtbo` (before the checker config was added).
-- Halium's config checker: 114 problems -> 40 after `halium-checker.config`. The remaining 40 are legacy symbol names absent from 4.14 (`CGROUP_MEM_RES_CTLR*`, `DEBUG_RODATA`, ...) plus `DEFAULT_IOSCHED`, `FW_LOADER_USER_HELPER`, `RTC_DRV_CMOS`, `STRICT_DEVMEM`, none expected to block boot.
-- NOT yet verified: the supported clang build via `build.sh`, the rootfs/system image step, and everything on hardware.
+## Verified so far (build side only)
+- `./build.sh` completes (pinned Halium 11 clang `r383902`, kernel `lineage-21` + `patches/` + `config/`).
+- `boot.img` unpacked and checked: header v2, page 4096, kernel 0x8000, ramdisk 0x1000000, DTB 0x1f00000 (base `xiaomi-sdmmagpie`), intended cmdline.
+- `dtbo.img` is a valid DTBO table containing `sweet-sdmmagpie-overlay.dtbo`.
+- `make-images.sh` completes; rootfs inspected read-only: contains `/var/lib/lxc/android/android-rootfs.img` (generic Halium container) and this port's `android.conf` overlay.
+- Halium's config checker: 114 problems -> 40 after `halium-checker.config`; the rest are legacy symbol names absent from 4.14 plus `DEFAULT_IOSCHED`, `FW_LOADER_USER_HELPER`, `RTC_DRV_CMOS`, `STRICT_DEVMEM`, none expected to block boot.
+
+## NOT verified
+- Anything on real hardware: booting, display, touch, modem, Wi-Fi, audio, camera, sensors, GPU, charging.
+- Placeholders that need real values: `deviceinfo_bootimg_os_patch_level` (copy from your stock boot.img with `unpack_bootimg.py`) and `GRID_UNIT_PX`/`QTWEBKIT_DPR` in `overlay/.../android.conf`.
+- `deviceinfo_kernel_cmdline` may need `console=tty0` for visible boot output; unconfirmed.
+- No UBports recovery, so no recovery-based install or OTA yet.
+
+## Artifacts
+`artifacts/` holds `boot-sweetin.img.xz` (xz; unpack with `xz -d`) and `dtbo-sweetin.img` with SHA256SUMS. `system.img` (3.4 GB) and `rootfs.img` are too large for git; regenerate with `./make-images.sh`.
 
 ## Device facts (LineageOS board config)
-A-only, dynamic partitions (`super` ~8.5 GB), boot/recovery 128 MB, dtbo 32 MB, AVB enabled (needs `vbmeta` with verification disabled).
+A-only, dynamic partitions (`super` ~8.5 GB), boot/recovery 128 MB, dtbo 32 MB, AVB enabled.
 
-## Flashing (untested, needs your phone)
-Requires an unlocked bootloader (Mi Unlock, waiting period) and Android 11 stock firmware so the `vendor` partition matches Halium 11. Back up the stock `boot`, `dtbo` and `vbmeta` first. Expected sequence, once images exist:
-    fastboot flash boot out/boot.img
-    fastboot flash dtbo out/dtbo.img
-    fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img   # use a vbmeta from stock firmware
-    fastboot reboot fastboot                                                    # userspace fastboot for dynamic partitions
-    fastboot flash system out/system.img
+## Flashing (UNTESTED, needs your phone; can brick or bootloop it)
+Requires an unlocked bootloader (Mi Unlock, waiting period; wipes data) and Android 11 stock firmware so the `vendor` partition matches Halium 11. **First back up** stock `boot`, `dtbo` and `vbmeta`, and keep the stock firmware zip for recovery.
+
+    xz -dk artifacts/boot-sweetin.img.xz
+    fastboot flash boot boot-sweetin.img
+    fastboot flash dtbo images/dtbo.img
+    fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img   # vbmeta.img from stock firmware
+    fastboot reboot fastboot                                                    # userspace fastbootd for dynamic partitions
+    fastboot flash system images/system.img
+
+The `system` logical partition may need resizing first. If the flash is refused, fix that before retrying. Hardware bring-up (display, modem, audio...) is expected to need further work afterwards.
