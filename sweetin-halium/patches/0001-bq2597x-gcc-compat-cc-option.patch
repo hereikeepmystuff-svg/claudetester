@@ -1,0 +1,10 @@
+diff --git a/drivers/power/supply/ti/Makefile b/drivers/power/supply/ti/Makefile
+index a911e6a00..2afde098d 100644
+--- a/drivers/power/supply/ti/Makefile
++++ b/drivers/power/supply/ti/Makefile
+@@ -1,4 +1,4 @@
+ obj-$(CONFIG_BQ2597X_CHARGE_PUMP)	+= bq2597x_charger.o pd_policy_manager.o cp_qc30.o
+ 
+ CFLAGS_REMOVE_bq2597x_charger.o += -mgeneral-regs-only
+-CFLAGS_bq2597x_charger.o += -mno-implicit-float
++CFLAGS_bq2597x_charger.o += $(call cc-option,-mno-implicit-float)
