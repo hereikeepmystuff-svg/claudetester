@@ -1,3 +1,7 @@
-# Upstream source checkouts and build output; reproduce with the steps in README.md
-src/
+# Build workspace and downloaded toolchains; reproduce with ./build.sh
+workdir/
+build/
+.shims/
 out*/
+ota/
+*.log

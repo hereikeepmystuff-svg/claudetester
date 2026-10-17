@@ -1,0 +1,40 @@
+#!/bin/bash
+# Port-level wrapper around halium-generic-adaptation-build-tools.
+# Clones the kernel and toolchains, applies patches/ and config/ fragments, then runs the generic build.
+# Usage: ./build.sh [args passed to the generic build.sh, e.g. -k for kernel only]
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")" && pwd)"
+cd "$HERE"
+TOOLS="${TOOLS:-$HERE/build}"
+BUILD_DIR="${BUILD_DIR:-$HERE/workdir}"
+TOOLS_URL=https://gitlab.com/ubports/porting/community-ports/halium-generic-adaptation-build-tools
+
+[ -d "$TOOLS" ] || git clone --depth 1 "$TOOLS_URL" "$TOOLS"
+
+# mkdtboimg.py still invokes python2; fall back to python3 when python2 is not installed
+if ! command -v python2 >/dev/null; then
+    mkdir -p "$HERE/.shims"
+    ln -sf "$(command -v python3)" "$HERE/.shims/python2"
+    export PATH="$HERE/.shims:$PATH"
+fi
+
+source "$HERE/deviceinfo"
+KERNEL_DIR="$BUILD_DIR/downloads/$(basename "${deviceinfo_kernel_source%.git}")"
+
+# 1. clone kernel + toolchains only
+"$TOOLS/build.sh" -c -b "$BUILD_DIR" -o "$HERE/out"
+
+# 2. patch the kernel and add config fragments (idempotent)
+for p in "$HERE"/patches/*.patch; do
+    if git -C "$KERNEL_DIR" apply --check "$p" 2>/dev/null; then
+        git -C "$KERNEL_DIR" apply "$p"
+    elif git -C "$KERNEL_DIR" apply --check -R "$p" 2>/dev/null; then
+        echo "already applied: $(basename "$p")"
+    else
+        echo "patch does not apply: $p" >&2; exit 1
+    fi
+done
+cp "$HERE"/config/*.config "$KERNEL_DIR/arch/arm64/configs/vendor/"
+
+# 3. generic build (kernel, dtbo, boot.img, device tarball)
+exec "$TOOLS/build.sh" -b "$BUILD_DIR" -o "$HERE/out" "$@"
