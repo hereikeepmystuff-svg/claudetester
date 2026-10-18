@@ -50,8 +50,11 @@ Requires an unlocked bootloader (Mi Unlock, waiting period; wipes data) and Andr
     xz -dk artifacts/boot-sweetin.img.xz
     fastboot flash boot boot-sweetin.img
     fastboot flash dtbo images/dtbo.img
-    fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img   # vbmeta.img from stock firmware
+    fastboot --disable-verity --disable-verification flash vbmeta artifacts/vbmeta-disabled.img
+    fastboot --disable-verity --disable-verification flash vbmeta_system artifacts/vbmeta-disabled.img
     fastboot reboot fastboot                                                    # userspace fastbootd for dynamic partitions
     fastboot flash system images/system.img
+
+**Both `vbmeta` and `vbmeta_system` must be flashed** (this phone has both; skipping them left stock signatures that no longer match the replaced `boot`/`system`, and a first test bootlooped at the logo with `vbmeta` skipped). `artifacts/vbmeta-disabled.img` is generated with `avbtool make_vbmeta_image --flags 3`, so stock files are not required for this step.
 
 The `system` logical partition may need resizing first. If the flash is refused, fix that before retrying. Hardware bring-up (display, modem, audio...) is expected to need further work afterwards.

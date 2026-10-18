@@ -6,10 +6,12 @@ expectation and may be wrong. Flashing can bootloop the device; read the recover
 
 ## 0. Before you flash
 - Bootloader unlocked (Mi Unlock; wipes data) and the phone on **Android 11** stock firmware (Halium 11 needs a matching `vendor`).
-- Backup, from the stock firmware: `boot`, `dtbo`, `vbmeta`. Keep the full stock fastboot ROM zip for restoring.
+- Backup, from the stock firmware: `boot`, `dtbo`, `vbmeta`, `vbmeta_system`. Keep the full stock fastboot ROM zip for restoring.
 - Know how to reach fastboot on Xiaomi: power off, then hold **Volume Down + Power** *(unconfirmed for this model; widely used on Xiaomi phones)*.
 
 ## 1. Flash
+Both `vbmeta` and `vbmeta_system` must be flashed with verification disabled. A reported first attempt that skipped `vbmeta` bootlooped at the Mi logo; the cause is not yet confirmed to be AVB.
+
 Follow the "Flashing" section in `../README.md`. If `fastboot flash system` is refused (partition too small), stop and
 report the exact error; do not force it.
 
@@ -66,6 +68,7 @@ flash or the ramdisk's dynparts handling.
        fastboot flash boot stock-boot.img
        fastboot flash dtbo stock-dtbo.img
        fastboot --disable-verity --disable-verification flash vbmeta stock-vbmeta.img
+       fastboot --disable-verity --disable-verification flash vbmeta_system stock-vbmeta_system.img   # if you backed it up
 
 3. If the phone still will not start, restore the full stock fastboot ROM (including `super`) with Xiaomi's flash tool or the ROM's `flash_all` script.
 
