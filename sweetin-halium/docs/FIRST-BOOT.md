@@ -126,3 +126,12 @@ Flash only the partition named in each step, then watch `dmesg -w` on the host f
        adb shell cat /sys/fs/pstore/console-ramoops-0
 
    Send me that output. (Unconfirmed that ramoops survives this phone's reset path; a hard power-off clears it.)
+
+## 10. Reading the kernel log without USB (debug image)
+`scripts/make-debug-boot.sh [stock-boot.img]` builds a **debug-only** boot image that panics the kernel 45 s after the initramfs starts, so the whole
+kernel log stays in pstore/ramoops RAM (`CONFIG_PSTORE_CONSOLE`, `PSTORE_RAM`, `PANIC_TIMEOUT=5`; it also adds `ignore_loglevel`).
+It reboot-loops on purpose; flash a normal boot image to stop it.
+1. Flash it (plus the matching stock `dtbo` if it embeds the stock DTB), reboot, wait ~2 minutes.
+2. Reach fastboot (Vol Down + Power) **without removing power/battery** and boot a recovery that gives `adb`: `fastboot boot <recovery.img>`.
+3. `adb shell ls /sys/fs/pstore` then `adb shell cat /sys/fs/pstore/console-ramoops-0` and send the output.
+Unconfirmed: whether RAM contents survive the key-combo reset into fastboot on this phone. If `/sys/fs/pstore` is empty, that is itself a finding.
