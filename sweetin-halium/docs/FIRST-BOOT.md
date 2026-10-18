@@ -87,6 +87,13 @@ Do not post personal data: logs can contain serial numbers, Wi-Fi names and acco
 Display scaling (a guess), touch, modem/calls/SMS, mobile data, audio, camera, sensors and GPU acceleration are all
 unproven on this port and each needs separate bring-up.
 
+
+### Why "no USB device" was uninformative (found later)
+The first builds had no RNDIS gadget function in the kernel (`CONFIG_USB_CONFIGFS_RNDIS` unset; the Lineage sm6150 defconfig only enables NCM).
+The Halium initramfs builds its debug network from RNDIS and, if it cannot, waits 60 s and runs `reboot -f`. So a failed boot looked like a
+bootloop and no USB device could ever appear, which made the early "no USB device" reports meaningless. Fixed in `config/halium.config`; boot images built before that fix cannot show USB at all.
+With a fixed kernel, expect either `telnet 192.168.2.15` (initramfs failed to boot) or SSH at `10.15.19.82` (booted).
+
 ## 9. Stuck looping at the logo: experiments in order (one change at a time)
 
 ### Finding from the stock boot.img (reported by a tester)
