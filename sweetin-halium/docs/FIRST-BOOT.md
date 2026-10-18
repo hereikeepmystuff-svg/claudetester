@@ -86,3 +86,16 @@ Do not post personal data: logs can contain serial numbers, Wi-Fi names and acco
 ## 8. Expected to be broken even after it boots
 Display scaling (a guess), touch, modem/calls/SMS, mobile data, audio, camera, sensors and GPU acceleration are all
 unproven on this port and each needs separate bring-up.
+
+## 9. Stuck looping at the logo: experiments in order (one change at a time)
+Reported so far: loops at the logo even with `vbmeta` and `vbmeta_system` flashed using `artifacts/vbmeta-disabled.img`, so AVB alone is not the cause.
+Flash only the partition named in each step, then watch `dmesg -w` on the host for any USB device.
+1. **Stock `dtbo`** (your backup) with the port's `boot.img`: `fastboot flash dtbo stock-dtbo.img`. If this boots further, the generated DTBO is the problem.
+2. **DTBO with a 4096-byte page size** (`artifacts/dtbo-sweetin-ps4096.img`): the default image uses 2048. Unconfirmed that the bootloader cares.
+3. **Read the crash log** (no rebuild needed: the kernel has pstore/ramoops enabled and reserves `ramoops_memreserve=4M`).
+   After a loop, go to fastboot and boot any recovery that gives you `adb`, e.g. `fastboot boot <recovery.img>`, then:
+
+       adb shell ls /sys/fs/pstore
+       adb shell cat /sys/fs/pstore/console-ramoops-0
+
+   Send me that output. (Unconfirmed that ramoops survives this phone's reset path; a hard power-off clears it.)
