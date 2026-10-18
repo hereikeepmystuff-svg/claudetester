@@ -88,6 +88,26 @@ Display scaling (a guess), touch, modem/calls/SMS, mobile data, audio, camera, s
 unproven on this port and each needs separate bring-up.
 
 ## 9. Stuck looping at the logo: experiments in order (one change at a time)
+
+### Finding from the stock boot.img (reported by a tester)
+The stock Android 11 `boot.img` has the same header layout as this port (v2, page 4096, same offsets) and
+`os patch level 2021-12`, but its embedded DTB blob is 3.29 MB (16 trees, incl. `qcom,sdmmagpie` with
+`msm-id 0x16d`, same as this port's single tree, so tree *selection* is not the problem). Its **reserved-memory map differs** from
+the LineageOS 21 tree used here:
+
+| node | stock Android 11 | this port (lineage-21 DT) |
+|---|---|---|
+| `pil_adsp_region` | `0x95700000`, size `0x2600000` | `0x95700000`, size `0x1e00000` |
+| `wlan_msa_region` | `0x97d00000` | `0x97500000` |
+| `npu_region` | `0x97e80000` | `0x97680000` |
+| `ips_fw_region` | `0x97f00000` | `0x97700000` |
+
+A map that disagrees with the running firmware can trigger a secure reset right after the bootloader hands over, which looks like a logo loop. This is a hypothesis, not yet confirmed.
+
+**Test (changes only the DTB):** `scripts/repack-with-stock-dtb.sh stock-boot.img` builds a boot image with the port's kernel and ramdisk and the stock DTB blob. Flash it together with the **stock `dtbo.img` from the same firmware package** (the stock tree and stock overlay belong together), keeping `vbmeta`/`vbmeta_system` disabled.
+If it boots further (a USB device appears), the fix is to patch the kernel's device tree to the stock memory map and rebuild, so no stock blob is needed.
+
+Other experiments, one change at a time:
 Reported so far: loops at the logo even with `vbmeta` and `vbmeta_system` flashed using `artifacts/vbmeta-disabled.img`, so AVB alone is not the cause.
 Flash only the partition named in each step, then watch `dmesg -w` on the host for any USB device.
 1. **Stock `dtbo`** (your backup) with the port's `boot.img`: `fastboot flash dtbo stock-dtbo.img`. If this boots further, the generated DTBO is the problem.
