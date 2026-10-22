@@ -37,6 +37,8 @@ deviceinfo_bootimg_partition_size="134217728"
 
 deviceinfo_dtb="qcom/sdmmagpie.dtb"
 deviceinfo_dtbo="qcom/sweet-sdmmagpie-overlay.dtbo"
+# Qualcomm overlay sources (top-level &label { } with /plugin/) need the external dtc that Xiaomi's Android build uses
+deviceinfo_kernel_use_dtc_ext="true"
 
 # Partitions: A-only, dynamic partitions (super); Ubuntu Touch rootfs replaces the system partition
 deviceinfo_system_partition_size="3584M"

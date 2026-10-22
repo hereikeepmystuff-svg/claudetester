@@ -21,6 +21,15 @@ fi
 source "$HERE/deviceinfo"
 KERNEL_DIR="$BUILD_DIR/downloads/$(basename "${deviceinfo_kernel_source%.git}")"
 
+# Qualcomm overlay sources need an overlay-aware dtc ("dtc_ext", see deviceinfo_kernel_use_dtc_ext). The tools download a
+# 2017 LineageOS prebuilt for it; a blocked or failed download used to leave an HTML/JSON error saved as that "binary".
+# Use the host's dtc (>= 1.5, supports /plugin/) instead, which the tools then skip downloading.
+mkdir -p "$BUILD_DIR/downloads"
+if [ ! -x "$BUILD_DIR/downloads/dtc_ext" ] || ! "$BUILD_DIR/downloads/dtc_ext" --version >/dev/null 2>&1; then
+    command -v dtc >/dev/null || { echo "install device-tree-compiler (dtc >= 1.5)" >&2; exit 1; }
+    cp -f "$(command -v dtc)" "$BUILD_DIR/downloads/dtc_ext"
+fi
+
 # 1. clone kernel + toolchains only
 "$TOOLS/build.sh" -c -b "$BUILD_DIR" -o "$HERE/out"
 

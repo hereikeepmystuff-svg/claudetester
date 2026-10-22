@@ -6,8 +6,8 @@ Ubuntu Touch (Halium 11) port for the Xiaomi Redmi Note 10 Pro (`sweetin` India 
 ## How it is built
 Uses UBports' [halium-generic-adaptation-build-tools](https://gitlab.com/ubports/porting/community-ports/halium-generic-adaptation-build-tools).
 `./build.sh` is a port-level wrapper that:
-1. clones the tools, the LineageOS kernel (`android_kernel_xiaomi_sm6150`, `lineage-21`) and the pinned Halium 11 clang,
-2. applies `patches/*.patch` and copies `config/*.config` into the kernel's `arch/arm64/configs/vendor/`,
+1. clones the tools, Xiaomi's official Android 11 kernel source (`MiCode/Xiaomi_Kernel_OpenSource`, branch `sweet-r-oss`, Linux 4.14.180) and the pinned Halium 11 clang,
+2. applies `patches/<port_patch_set>/*.patch` and copies `config/*.config` into the kernel's `arch/arm64/configs/vendor/`,
 3. runs the generic build with `deviceinfo` (kernel, DTB, DTBO, `boot.img`, device tarball in `out/`).
 
 Then `./make-images.sh` fetches UBports' rootfs + the generic Halium system image and produces `images/{boot,dtbo,rootfs,system}.img`.
@@ -22,13 +22,15 @@ Host needs (Ubuntu): bc bison build-essential cpio curl fakeroot flex git kmod l
 - `deviceinfo`: device/boot parameters, from LineageOS `sweet` / `sm6150-common` board config (header v2, base 0x0, page 4096, DTB in boot image, separate DTBO, UFS `1d84000.ufshc`, `systempart=/dev/mapper/system`).
 - `config/halium.config`: container support (namespaces, cgroups, binder, AppArmor, overlayfs, veth).
 - `config/halium-checker.config`: generated from Halium's `check-kernel-config -w`.
-- `patches/0001`: make clang-only `-mno-implicit-float` conditional (GCC compatibility).
-- `patches/0002`: define two WALT sysctl variables that `lineage-21` references but never defines (link error otherwise).
+- `config/sweet-port.config`: `CONFIG_BUILD_ARM64_DT_OVERLAY=y` (Xiaomi's Android build sets it outside the defconfig; gives the base `sdmmagpie.dtb` + `sweet-sdmmagpie-overlay.dtbo` layout).
+- `patches/xiaomi-r-oss/`: builds only the sweet overlay (several reference-board DTBOs in that tree do not compile). `patches/lineage-21/`: obsolete fixes for the abandoned LineageOS 21 kernel.
 
 ## Verified so far (build side only)
-- `./build.sh` completes (pinned Halium 11 clang `r383902`, kernel `lineage-21` + `patches/` + `config/`).
-- `boot.img` unpacked and checked: header v2, page 4096, kernel 0x8000, ramdisk 0x1000000, DTB 0x1f00000 (base `xiaomi-sdmmagpie`), intended cmdline.
-- `dtbo.img` is a valid DTBO table containing `sweet-sdmmagpie-overlay.dtbo`.
+- `./build.sh` completes on Xiaomi's Android 11 source (pinned Halium 11 clang `r383902`, Linux 4.14.180) with the config/patches in this repo, building from a clean output directory.
+- **The built `sdmmagpie.dtb` is byte-identical (same SHA-256) to the base device tree inside a stock Android 11 `boot.img`** from this phone, so the kernel source, toolchain and memory map match the shipped firmware. (The earlier LineageOS 21 tree did not: `pil_adsp_region` 0x1e00000 vs stock 0x2600000.)
+- Kernel config contains the Halium needs, incl. USB RNDIS/ECM (the Halium initramfs builds its debug network from RNDIS), namespaces, devtmpfs, AppArmor, binder, pstore.
+- `boot.img` unpacked and checked: header v2, page 4096, offsets 0x8000/0x1000000/0x1f00000, `os patch level 2021-12`, intended cmdline incl. `systempart=/dev/mapper/system`.
+- `dtbo` is a valid DTBO table containing `sweet-sdmmagpie-overlay.dtbo` (the tools' default image uses a 2048 page size; `artifacts/dtbo-sweetin.img` is rebuilt with 4096 like AOSP, and the stock `dtbo` partition is also expected to work).
 - `make-images.sh` completes; rootfs inspected read-only: contains `/var/lib/lxc/android/android-rootfs.img` (generic Halium container) and this port's `android.conf` overlay.
 - Halium's config checker: 114 problems -> 40 after `halium-checker.config`; the rest are legacy symbol names absent from 4.14 plus `DEFAULT_IOSCHED`, `FW_LOADER_USER_HELPER`, `RTC_DRV_CMOS`, `STRICT_DEVMEM`, none expected to block boot.
 
@@ -39,7 +41,7 @@ Host needs (Ubuntu): bc bison build-essential cpio curl fakeroot flex git kmod l
 - No UBports recovery, so no recovery-based install or OTA yet.
 
 ## Artifacts
-`artifacts/` holds `boot-sweetin.img.xz` (xz; unpack with `xz -d`) and `dtbo-sweetin.img` with SHA256SUMS. `system.img` (3.4 GB) and `rootfs.img` are too large for git; regenerate with `./make-images.sh`.
+`artifacts/` holds `boot-sweetin.img.xz` (xz; unpack with `xz -d`), `dtbo-sweetin.img` and `vbmeta-disabled.img` with SHA256SUMS; all from the Xiaomi-source build. `system.img` (3.4 GB) and `rootfs.img` are too large for git; regenerate with `./make-images.sh`.
 
 ## Device facts (LineageOS board config)
 A-only, dynamic partitions (`super` ~8.5 GB), boot/recovery 128 MB, dtbo 32 MB, AVB enabled.
