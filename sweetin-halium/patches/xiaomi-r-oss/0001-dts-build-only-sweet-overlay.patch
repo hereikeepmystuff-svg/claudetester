@@ -1,0 +1,60 @@
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index 8a03413e1..46aed57f7 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -229,25 +229,8 @@ dtb-$(CONFIG_ARCH_SDMSHRIKE)	+= sdmshrike-rumi.dtb \
+ endif
+ 
+ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
+-	dtbo-$(CONFIG_ARCH_SM6150) += \
+-		sm6150-rumi-overlay.dtbo \
+-		sm6150-qrd-overlay.dtbo \
+-		sm6150-idp-overlay.dtbo \
+-		sm6150p-qrd-overlay.dtbo \
+-		sm6150p-idp-overlay.dtbo \
+-		sm6150-external-codec-idp-overlay.dtbo \
+-		sm6150-usbc-idp-overlay.dtbo \
+-		sm6150-usbc-minidp-idp-overlay.dtbo \
+-		sm6150-cmd-mode-display-idp-overlay.dtbo \
+-		sa6155-adp-star-overlay.dtbo \
+-		sa6155p-adp-star-overlay.dtbo \
+-		sa6155-adp-air-overlay.dtbo \
+-		sa6155p-adp-air-overlay.dtbo \
+-		sa6155p-v2-adp-star-overlay.dtbo \
+-		sa6155p-v2-adp-air-overlay.dtbo \
+-		qcs610-iot-overlay.dtbo \
+-		qcs610-ipc-overlay.dtbo \
+-		qcs410-iot-overlay.dtbo
++	# Reference-board overlays for the sm6150/sa6155/qcs4xx/qcs6xx boards are not built for this port (several fail to
++	# compile and none is this phone). See sweetin-halium patches/xiaomi-r-oss/.
+ 
+ sm6150-rumi-overlay.dtbo-base := sm6150.dtb
+ sm6150-qrd-overlay.dtbo-base := sm6150.dtb
+@@ -290,24 +273,10 @@ dtb-$(CONFIG_ARCH_SM6150)	+= sm6150-rumi.dtb \
+ endif
+ 
+ ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
++	# Only the overlay for this port: the reference-board overlays (e.g. sdmmagpie-atp) fail to compile with this
++	# toolchain and are irrelevant for the phone. See sweetin-halium patches/xiaomi-r-oss/.
+ 	dtbo-$(CONFIG_ARCH_SDMMAGPIE) += \
+-		sdmmagpie-idp-overlay.dtbo \
+-		sdmmagpie-atp-overlay.dtbo \
+-		sdmmagpie-rumi-overlay.dtbo \
+-		sdmmagpie-qrd-overlay.dtbo \
+-		davinci-sdmmagpie-overlay.dtbo \
+-		davinci_m0a-sdmmagpie-overlay.dtbo \
+-		davinci_m0b-sdmmagpie-overlay.dtbo \
+-		phoenix-sdmmagpie-overlay.dtbo \
+-		sweet-sdmmagpie-overlay.dtbo \
+-		tucana-sdmmagpie-overlay.dtbo \
+-		toco-sdmmagpie-overlay.dtbo \
+-		sdmmagpiep-idp-overlay.dtbo \
+-		sdmmagpiep-atp-overlay.dtbo \
+-		sdmmagpiep-qrd-overlay.dtbo \
+-		sdmmagpie-external-codec-idp-overlay.dtbo \
+-		sdmmagpie-usbc-idp-overlay.dtbo \
+-		sdmmagpie-dual-display-idp-overlay.dtbo
++		sweet-sdmmagpie-overlay.dtbo
+ 
+ sdmmagpie-idp-overlay.dtbo-base := sdmmagpie.dtb
+ sdmmagpie-atp-overlay.dtbo-base := sdmmagpie.dtb
