@@ -1,6 +1,6 @@
 #!/bin/bash
 # Port-level wrapper around halium-generic-adaptation-build-tools.
-# Clones the kernel and toolchains, applies patches/ and config/ fragments, then runs the generic build.
+# Clones the kernel and toolchains, applies patches/<set>/ and config/ fragments, then runs the generic build.
 # Usage: ./build.sh [args passed to the generic build.sh, e.g. -k for kernel only]
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -24,8 +24,9 @@ KERNEL_DIR="$BUILD_DIR/downloads/$(basename "${deviceinfo_kernel_source%.git}")"
 # 1. clone kernel + toolchains only
 "$TOOLS/build.sh" -c -b "$BUILD_DIR" -o "$HERE/out"
 
-# 2. patch the kernel and add config fragments (idempotent)
-for p in "$HERE"/patches/*.patch; do
+# 2. patch the kernel and add config fragments (idempotent). Patches live in patches/<port_patch_set>/ (set in deviceinfo).
+shopt -s nullglob
+for p in "$HERE/patches/${port_patch_set:?port_patch_set missing in deviceinfo}"/*.patch; do
     if git -C "$KERNEL_DIR" apply --check "$p" 2>/dev/null; then
         git -C "$KERNEL_DIR" apply "$p"
     elif git -C "$KERNEL_DIR" apply --check -R "$p" 2>/dev/null; then

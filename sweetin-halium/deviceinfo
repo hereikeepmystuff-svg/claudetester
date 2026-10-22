@@ -8,10 +8,14 @@ deviceinfo_codename="sweetin"
 deviceinfo_arch="aarch64"
 deviceinfo_halium_version="11"
 
-# Kernel: LineageOS tree, patched and configured by build.sh before the generic build runs
-deviceinfo_kernel_source="https://github.com/LineageOS/android_kernel_xiaomi_sm6150"
-deviceinfo_kernel_source_branch="lineage-21"
-deviceinfo_kernel_defconfig="vendor/sdmsteppe-perf_defconfig vendor/debugfs.config vendor/sweet.config vendor/halium.config vendor/halium-checker.config"
+# Kernel: Xiaomi's official Android 11 source for this phone (4.14.180). Its defconfig differs from the config inside the stock
+# firmware's kernel by only 22 MIUI-specific options, and its device tree has the stock reserved-memory map
+# (the LineageOS 21 tree did not: pil_adsp_region 0x1e00000 vs stock 0x2600000).
+deviceinfo_kernel_source="https://github.com/MiCode/Xiaomi_Kernel_OpenSource"
+deviceinfo_kernel_source_branch="sweet-r-oss"
+# Read by this port's build.sh (not by the generic tools): which patches/ subdirectory applies to this kernel
+port_patch_set="xiaomi-r-oss"
+deviceinfo_kernel_defconfig="sweet_user_defconfig vendor/halium.config vendor/halium-checker.config"
 deviceinfo_kernel_cmdline="console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x880000 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.usbcontroller=a600000.dwc3 androidboot.boot_devices=soc/1d84000.ufshc service_locator.enable=1 lpm_levels.sleep_disabled=1 loop.max_part=7 printk.devkmsg=on systempart=/dev/mapper/system"
 deviceinfo_kernel_clang_compile="true"
 deviceinfo_kernel_image_name="Image.gz"
@@ -31,7 +35,7 @@ deviceinfo_bootimg_os_version="11"
 deviceinfo_bootimg_os_patch_level="2021-12"
 deviceinfo_bootimg_partition_size="134217728"
 
-deviceinfo_dtb="qcom/xiaomi-sdmmagpie.dtb"
+deviceinfo_dtb="qcom/sdmmagpie.dtb"
 deviceinfo_dtbo="qcom/sweet-sdmmagpie-overlay.dtbo"
 
 # Partitions: A-only, dynamic partitions (super); Ubuntu Touch rootfs replaces the system partition
