@@ -15,7 +15,7 @@ deviceinfo_kernel_source="https://github.com/MiCode/Xiaomi_Kernel_OpenSource"
 deviceinfo_kernel_source_branch="sweet-r-oss"
 # Read by this port's build.sh (not by the generic tools): which patches/ subdirectory applies to this kernel
 port_patch_set="xiaomi-r-oss"
-deviceinfo_kernel_defconfig="sweet_user_defconfig vendor/halium.config vendor/halium-checker.config"
+deviceinfo_kernel_defconfig="sweet_user_defconfig vendor/sweet-port.config vendor/halium.config vendor/halium-checker.config"
 deviceinfo_kernel_cmdline="console=ttyMSM0,115200n8 earlycon=msm_geni_serial,0x880000 androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.usbcontroller=a600000.dwc3 androidboot.boot_devices=soc/1d84000.ufshc service_locator.enable=1 lpm_levels.sleep_disabled=1 loop.max_part=7 printk.devkmsg=on systempart=/dev/mapper/system"
 deviceinfo_kernel_clang_compile="true"
 deviceinfo_kernel_image_name="Image.gz"
